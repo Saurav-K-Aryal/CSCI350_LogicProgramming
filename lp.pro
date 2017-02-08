@@ -10,7 +10,6 @@
 % sum-up-numbers-simple(L, N) returns true if N is the sum of the
 % numbers not in nested lists in the given list L.
 
-
 % If L = [], N = 0
 sum-up-numbers-simple([], 0).
 
@@ -29,7 +28,6 @@ sum-up-numbers-simple([HEAD|TAIL], N):-
 
 % sum-up-numbers-general(L, N) returns true if N is the sum of the
 % numbers, inlcuding ones in nested lists, in the given list L.
-
 
 % If L = [], N = 0
 sum-up-numbers-general([], 0).
@@ -58,7 +56,13 @@ sum-up-numbers-general([HEAD|TAIL], N):-
 % find-list-min(L, MIN_VAL) returns the minimum numeric value in the given list L.
 
 % If single numeric element in list, return element.
-find-list-min([HEAD], HEAD).
+find-list-min([HEAD], MIN_VAL):-
+    number(HEAD),
+    MIN_VAL is HEAD.
+
+%return false if last element in non-numeric
+find-list-min([HEAD]):-
+    \+number(HEAD).
 
 
 % If multiple elements, compare first two if both are number
@@ -116,25 +120,6 @@ get-greater([HEAD|TAIL], X, L) :-
   get-greater(TAIL, X, L).
 
 
-
-min-above-min(L1, L2, N):-
-	find-list-min(L1, M1),
-	not(number(M1)),
-	min-above-min(L1, L1, N).
-
-min-above-min(L1, L2, N):-
-	find-list-min(L2, M2),
-	not(number(M2)),
-	find-list-min(List1, MinList1).
-
-min-above-min(L1, L2, N):-
-	find-list-min(L2, M2),
-	number(M2),
-	remove-greater(L1, M2, List1),
-	find-list-min(List1, MinList1).
-
-
-
 % my-flatten(L1, L2) returns a list L2 by flattening L1
 
 %if list is empty
@@ -153,6 +138,7 @@ my-flatten([HEAD|TAIL], L2):-
 	my-flatten(HEAD, FlatHead),
 	append(FlatHead, FlatTail, L2).
 
+
 % my-intersection(L1, L2) returns a list which is intersection of
 % two simple lists L1 and L2.
 
@@ -160,14 +146,14 @@ my-flatten([HEAD|TAIL], L2):-
 my-intersection([],_,[]).
 
 % if common member in both lists.
-my-intersection([X|Y],M,[X|Z]) :-
-	member(X,M),
-	my-intersection(Y,M,Z).
+my-intersection([HEAD|TAIL1],M,[HEAD|TAIL2]) :-
+	member(HEAD,M),
+	my-intersection(TAIL1,M,TAIL2).
 
 % if not common member.
-my-intersection([X|Y],M,Z) :- 
-	\+ member(X,M),
-	my-intersection(Y,M,Z).
+my-intersection([HEAD|TAIL],M,Z) :- 
+	\+ member(HEAD,M),
+	my-intersection(TAIL,M,Z).
 
 
 % common-unique-elements(L1, L2, L) returns true if N is a simple list
