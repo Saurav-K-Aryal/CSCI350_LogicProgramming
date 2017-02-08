@@ -90,32 +90,26 @@ find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
 find-min([HEAD, NECK|TAIL], MIN_VAL):-
     \+ number(HEAD),
 	\+(number(NECK)),
-	find-min(TAIL, MIN_VAL).
-
-
-% append(L, X) returns a list with X appended to it.
-
-% if list is empty
-append([],X,X).
-
-% else
-append([X|Y],Z,[X|W]):- append(Y,Z,W). 
+	find-min(TAIL, MIN_VAL). 
 
 
 % my-flatten(L1, L2) returns a list L2 by flattening L1
 
 %if list is empty
-my-flatten([], L2, L2).
+my-flatten([], []).
 
+% if HEAD is not a list.
 my-flatten([HEAD|TAIL], L2):-
 	\+ is_list(HEAD),
-	L2 is append(L2, HEAD).
+	my-flatten(TAIL, FlatTail),
+	append([HEAD], FlatTail, L2).
 
+% if HEAD is list.
 my-flatten([HEAD|TAIL], L2):-
 	is_list(HEAD),
 	my-flatten(TAIL, FlatTail),
 	my-flatten(HEAD, FlatHead),
-	L2 is append(FlatHead, FlatTail).
+	append(FlatHead, FlatTail, L2).
 
 
 
