@@ -25,3 +25,31 @@ sum-up-numbers-simple([HEAD|TAIL], N):-
     \+ number(HEAD),
     sum-up-numbers-simple(TAIL, SubSum),
     N is SubSum.
+
+
+% sum-up-numbers-general(L, N) returns true if N is the sum of the
+% numbers, inlcuding ones in nested lists, in the given list L.
+
+
+% If L = [], N = 0
+sum-up-numbers-general([], 0).
+
+% If HEAD is a number, add to sum.
+sum-up-numbers-general([HEAD|TAIL], N):-
+    number(HEAD),
+    sum-up-numbers-simple(TAIL, SubSum),
+    N is HEAD + SubSum.
+
+% If HEAD is a list, sum numbers in head and add some of tail
+sum-up-numbers-simple([HEAD|TAIL], N):-
+    is_list(HEAD),
+    sum-up-numbers-simple(TAIL, TailSum),
+    sum-up-numbers-general(HEAD, HeadSum),
+    N is HeadSum + TailSum.
+
+% If HEAD cannot prove to be both number and list, continue.
+sum-up-numbers-general([HEAD|TAIL], N):-
+	\+ number(HEAD),
+	\+ is_list(HEAD),
+	sum-up-numbers-general(TAIL, SubSum),
+	N is SubSum. 
