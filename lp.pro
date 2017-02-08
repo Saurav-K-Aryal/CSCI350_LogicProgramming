@@ -90,31 +90,30 @@ find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
 find-list-min([HEAD, NECK|TAIL], MIN_VAL):-
     \+ number(HEAD),
 	\+(number(NECK)),
-	find-min(TAIL, MIN_VAL).
+	find-list-min(TAIL, MIN_VAL).
 
-% remove-greater(L, X) removes numbers greater than X.
+% get-greater(L, X) returns all numbers greater than X in L.
 
 % Base case
-remove-greater([], _, []) :- !.
+get-greater([], _, []) :- !.
 
 % if HEAD is number, HEAD > min-value
-remove-greater([HEAD|TAIL], X, L) :-
+get-greater([HEAD|TAIL], X, L) :-
   number(HEAD),
   HEAD > X,
-  remove-greater(TAIL, X, L1),
+  get-greater(TAIL, X, L1),
   append([HEAD], L1, L).
 
 % if HEAD is number, but HEAD <= min-value
-remove-greater([HEAD|TAIL], X, L) :-
+get-greater([HEAD|TAIL], X, L) :-
   number(HEAD),
-  HEAD <= X,
-  remove-greater(TAIL, X, L1).
+  HEAD =< X,
+  get-greater(TAIL, X, L).
 
-% if HEAD is non-number.
-remove-greater([HEAD|TAIL], X, L) :-
+% if HEAD is non-number, ignore.
+get-greater([HEAD|TAIL], X, L) :-
   \+ number(HEAD),
-  remove-greater(TAIL, X, L1),
-  append([HEAD], L1, L).
+  get-greater(TAIL, X, L).
 
 
 
@@ -171,8 +170,13 @@ my-intersection([X|Y],M,Z) :-
 	my-intersection(Y,M,Z).
 
 
+% common-unique-elements(L1, L2, L) returns true if N is a simple list
+% of the items that appear in both L1 and L2
+
+% empty list base case.
 common-unique-elements([], _, []).
 
+% for non-empty case, flatten and return intersection of two lists.
 common-unique-elements(L1, L2 , L):- 
 	my-flatten(L1, FlatL1),
 	my-flatten(L2, FlatL2),
