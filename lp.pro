@@ -55,27 +55,34 @@ sum-up-numbers-general([HEAD|TAIL], N):-
 	N is TailSum.
 
 
-% find-list-min(L, MIN) returns the minimum numeric value in the given list L.
-
-% If empty.
-find-list-min([], MIN, MIN).
+% find-list-min(L, MIN_VAL) returns the minimum numeric value in the given list L.
 
 % If single numeric element in list, return element.
-find-list-min([HEAD], MIN):-
-	number(HEAD),
-	MIN is HEAD.
-
+find-list-min([HEAD], HEAD).
 
 %% If single non-numeric element in list, return false.
-find-list-min([HEAD], MIN, MIN1):-
+find-list-min([HEAD], MIN_VAL):-
 	\+ number(HEAD).
 
-% If more than one element in list.
-find-list-min([HEAD|TAIL], MIN, MIN1):-
-    number(HEAD),
-    find-list-min(TAIL, TailMin),
-    MIN is min(HEAD, TailMin).
+% If multiple elements, compare first two if both are number
+find-min([HEAD,NECK|TAIL], MIN_VAL):-
+	number(HEAD),
+	number(NECK),
+	HEAD > NECK,           
+	find-min([NECK|TAIL], MIN_VAL);
 
-% For non-numeric elements.
-find-list-min([_|TAIL], MIN):-
-    find-list-min(TAIL, MIN).
+find-min([HEAD,NECK|TAIL], MIN_VAL):-
+	number(HEAD),
+	number(NECK),
+	HEAD =< NECK,         
+	find-min([HEAD|TAIL], MIN_VAL).
+
+find-min([HEAD,NECK|TAIL], MIN_VAL):-    % if second element is a number but not the first one
+	\+(number(HEAD)),
+	number(NECK),
+	find-min([NECK|TAIL], MIN_VAL).
+
+find-min([HEAD,NECK|TAIL], MIN_VAL):-   %  if first element is a number but not the second one
+	number(HEAD),
+	\+(number(NECK)),
+	find-min([HEAD|TAIL], MIN_VAL).
