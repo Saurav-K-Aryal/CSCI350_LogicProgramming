@@ -96,6 +96,7 @@ find-list-min([HEAD, NECK|TAIL], MIN_VAL):-
 	\+(number(NECK)),
 	find-list-min(TAIL, MIN_VAL).
 
+
 % get-greater(L, X) returns all numbers greater than X in L.
 
 % Base case
