@@ -99,8 +99,7 @@ find-min([HEAD, NECK|TAIL], MIN_VAL):-
 append([],X,X).
 
 % else
-append([X|Y],Z,[X|W])
-:- append(Y,Z,W). 
+append([X|Y],Z,[X|W]):- append(Y,Z,W). 
 
 
 % my-flatten(L1, L2) returns a list L2 by flattening L1
@@ -109,12 +108,14 @@ append([X|Y],Z,[X|W])
 my-flatten([], L2, L2).
 
 my-flatten([HEAD|TAIL], L2):-
-	number(HEAD),
+	\+ is_list(HEAD),
 	L2 is append(L2, HEAD).
 
 my-flatten([HEAD|TAIL], L2):-
 	is_list(HEAD),
-
+	my-flatten(TAIL, FlatTail),
+	my-flatten(HEAD, FlatHead),
+	L2 is append(FlatHead, FlatTail).
 
 
 
