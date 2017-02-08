@@ -87,29 +87,53 @@ find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
 	find-list-min([HEAD|TAIL], MIN_VAL).
 
 % if both are non-numeric.
-find-min([HEAD, NECK|TAIL], MIN_VAL):-
+find-list-min([HEAD, NECK|TAIL], MIN_VAL):-
     \+ number(HEAD),
 	\+(number(NECK)),
 	find-min(TAIL, MIN_VAL).
 
 % remove-greater(L, X) removes numbers greater than X.
+
+% Base case
 remove-greater([], _, []) :- !.
 
+% if HEAD is number, HEAD > min-value
 remove-greater([HEAD|TAIL], X, L) :-
   number(HEAD),
   HEAD > X,
   remove-greater(TAIL, X, L1),
   append([HEAD], L1, L).
 
+% if HEAD is number, but HEAD <= min-value
 remove-greater([HEAD|TAIL], X, L) :-
   number(HEAD),
   HEAD <= X,
   remove-greater(TAIL, X, L1).
 
+% if HEAD is non-number.
 remove-greater([HEAD|TAIL], X, L) :-
   \+ number(HEAD),
   remove-greater(TAIL, X, L1),
-  append([], L1, L).  
+  append([HEAD], L1, L).
+
+
+
+min-above-min(L1, L2, N):-
+	find-list-min(L1, M1),
+	not(number(M1)),
+	min-above-min(L1, L1, N).
+
+min-above-min(L1, L2, N):-
+	find-list-min(L2, M2),
+	not(number(M2)),
+	find-list-min(List1, MinList1).
+
+min-above-min(L1, L2, N):-
+	find-list-min(L2, M2),
+	number(M2),
+	remove-greater(L1, M2, List1),
+	find-list-min(List1, MinList1).
+
 
 
 % my-flatten(L1, L2) returns a list L2 by flattening L1
@@ -129,6 +153,11 @@ my-flatten([HEAD|TAIL], L2):-
 	my-flatten(TAIL, FlatTail),
 	my-flatten(HEAD, FlatHead),
 	append(FlatHead, FlatTail, L2).
+
+
+intersection([X|Y],M,[X|Z]) :- member(X,M), intersection(Y,M,Z).
+intersection([X|Y],M,Z) :- \+ member(X,M), intersection(Y,M,Z).
+intersection([],M,[]).
 
 
 common-unique-elements([],_,[]).
