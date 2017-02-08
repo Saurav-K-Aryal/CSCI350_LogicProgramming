@@ -154,18 +154,26 @@ my-flatten([HEAD|TAIL], L2):-
 	my-flatten(HEAD, FlatHead),
 	append(FlatHead, FlatTail, L2).
 
+% my-intersection(L1, L2) returns a list which is intersection of
+% two simple lists L1 and L2.
 
-intersection([X|Y],M,[X|Z]) :- member(X,M), intersection(Y,M,Z).
-intersection([X|Y],M,Z) :- \+ member(X,M), intersection(Y,M,Z).
-intersection([],M,[]).
+% empty list base case.
+my-intersection([],_,[]).
+
+% if common member in both lists.
+my-intersection([X|Y],M,[X|Z]) :-
+	member(X,M),
+	my-intersection(Y,M,Z).
+
+% if not common member.
+my-intersection([X|Y],M,Z) :- 
+	\+ member(X,M),
+	my-intersection(Y,M,Z).
 
 
-common-unique-elements([],_,[]).
+common-unique-elements([], _, []).
 
-common-unique-elements([X|Y], Z , L):- 
-	member(X, Z),
-	append([X], L1, L).
-
-common-unique-elements([X|Y], Z , L):-
-	not(member(X, Z)),
-	common-unique-elements(Y, Z , L).
+common-unique-elements(L1, L2 , L):- 
+	my-flatten(L1, FlatL1),
+	my-flatten(L2, FlatL2),
+	my-intersection(FlatL1, FlatL2, L).
