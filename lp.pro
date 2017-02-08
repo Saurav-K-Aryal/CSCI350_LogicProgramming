@@ -90,7 +90,26 @@ find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
 find-min([HEAD, NECK|TAIL], MIN_VAL):-
     \+ number(HEAD),
 	\+(number(NECK)),
-	find-min(TAIL, MIN_VAL). 
+	find-min(TAIL, MIN_VAL).
+
+% remove-greater(L, X) removes numbers greater than X.
+remove-greater([], _, []) :- !.
+
+remove-greater([HEAD|TAIL], X, L) :-
+  number(HEAD),
+  HEAD > X,
+  remove-greater(TAIL, X, L1),
+  append([HEAD], L1, L).
+
+remove-greater([HEAD|TAIL], X, L) :-
+  number(HEAD),
+  HEAD <= X,
+  remove-greater(TAIL, X, L1).
+
+remove-greater([HEAD|TAIL], X, L) :-
+  \+ number(HEAD),
+  remove-greater(TAIL, X, L1),
+  append([], L1, L).  
 
 
 % my-flatten(L1, L2) returns a list L2 by flattening L1
@@ -112,4 +131,12 @@ my-flatten([HEAD|TAIL], L2):-
 	append(FlatHead, FlatTail, L2).
 
 
+common-unique-elements([],_,[]).
 
+common-unique-elements([X|Y], Z , L):- 
+	member(X, Z),
+	append([X], L1, L).
+
+common-unique-elements([X|Y], Z , L):-
+	not(member(X, Z)),
+	common-unique-elements(Y, Z , L).
