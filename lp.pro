@@ -47,9 +47,35 @@ sum-up-numbers-general([HEAD|TAIL], N):-
     sum-up-numbers-general(HEAD, HeadSum),
     N is HeadSum + TailSum.
 
-% If HEAD cannot prove to be both number and list, continue.
+% If HEAD cannot be proven to be both number and list, continue.
 sum-up-numbers-general([HEAD|TAIL], N):-
 	\+ number(HEAD),
 	\+ is_list(HEAD),
 	sum-up-numbers-general(TAIL, TailSum),
 	N is TailSum.
+
+
+% find-list-min(L, MIN) returns the minimum numeric value in the given list L.
+
+% If empty.
+find-list-min([], MIN, MIN).
+
+% If single numeric element in list, return element.
+find-list-min([HEAD], MIN):-
+	number(HEAD),
+	MIN is HEAD.
+
+
+%% If single non-numeric element in list, return false.
+find-list-min([HEAD], MIN, MIN1):-
+	\+ number(HEAD).
+
+% If more than one element in list.
+find-list-min([HEAD|TAIL], MIN, MIN1):-
+    number(HEAD),
+    find-list-min(TAIL, TailMin),
+    MIN is min(HEAD, TailMin).
+
+% For non-numeric elements.
+find-list-min([_|TAIL], MIN):-
+    find-list-min(TAIL, MIN).
