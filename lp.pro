@@ -104,22 +104,36 @@ get-greater([], _, []) :- !.
 
 % if HEAD is number, HEAD > min-value
 get-greater([HEAD|TAIL], X, L) :-
-  number(HEAD),
-  HEAD > X,
-  get-greater(TAIL, X, L1),
-  append([HEAD], L1, L).
+	number(HEAD),
+	HEAD > X,
+	get-greater(TAIL, X, L1),
+	append([HEAD], L1, L).
 
 % if HEAD is number, but HEAD <= min-value
 get-greater([HEAD|TAIL], X, L) :-
-  number(HEAD),
-  HEAD =< X,
-  get-greater(TAIL, X, L).
+	number(HEAD),
+	HEAD =< X,
+	get-greater(TAIL, X, L).
 
 % if HEAD is non-number, ignore.
 get-greater([HEAD|TAIL], X, L) :-
-  \+ number(HEAD),
-  get-greater(TAIL, X, L).
+	\+ number(HEAD),
+	get-greater(TAIL, X, L).
 
+
+% min-above-min(L1, L2, N) return true if N is the minimum of the numbers in L1 
+% that are larger than the smallest number in L2. If there is no number in L2,
+% all the numbers in L1 should be used to calculate the minimum.
+
+min-above-min(L1, L2, N):-
+	find-list-min(L2, MinL2),
+	get-greater(L1, MinL2, GreaterList),
+	find-list-min(GreaterList, N).
+
+min-above-min(L1, L2, N):-
+	\+ find-list-min(L2, MinL2),
+	find-list-min(L1, N).
+	
 
 % my-flatten(L1, L2) returns a list L2 by flattening L1
 
