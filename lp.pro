@@ -17,14 +17,14 @@ sum-up-numbers-simple([], 0).
 % If HEAD is a number, compute sum.
 sum-up-numbers-simple([HEAD|TAIL], N):-
     number(HEAD),
-    sum-up-numbers-simple(TAIL, SubSum),
-    N is HEAD + SubSum.
+    sum-up-numbers-simple(TAIL, TailSum),
+    N is HEAD + TailSum.
 
 % If HEAD is a non-number, skip element.
 sum-up-numbers-simple([HEAD|TAIL], N):-
     \+ number(HEAD),
-    sum-up-numbers-simple(TAIL, SubSum),
-    N is SubSum.
+    sum-up-numbers-simple(TAIL, TailSum),
+    N is TailSum.
 
 
 % sum-up-numbers-general(L, N) returns true if N is the sum of the
@@ -37,13 +37,13 @@ sum-up-numbers-general([], 0).
 % If HEAD is a number, add to sum.
 sum-up-numbers-general([HEAD|TAIL], N):-
     number(HEAD),
-    sum-up-numbers-simple(TAIL, SubSum),
-    N is HEAD + SubSum.
+    sum-up-numbers-general(TAIL, TailSum),
+    N is HEAD + TailSum.
 
 % If HEAD is a list, sum numbers in head and add some of tail
-sum-up-numbers-simple([HEAD|TAIL], N):-
+sum-up-numbers-general([HEAD|TAIL], N):-
     is_list(HEAD),
-    sum-up-numbers-simple(TAIL, TailSum),
+    sum-up-numbers-general(TAIL, TailSum),
     sum-up-numbers-general(HEAD, HeadSum),
     N is HeadSum + TailSum.
 
@@ -51,5 +51,5 @@ sum-up-numbers-simple([HEAD|TAIL], N):-
 sum-up-numbers-general([HEAD|TAIL], N):-
 	\+ number(HEAD),
 	\+ is_list(HEAD),
-	sum-up-numbers-general(TAIL, SubSum),
-	N is SubSum. 
+	sum-up-numbers-general(TAIL, TailSum),
+	N is TailSum.
