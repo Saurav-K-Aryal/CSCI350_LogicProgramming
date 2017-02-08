@@ -14,8 +14,11 @@
 % If L = [], N = 0
 sum-up-numbers-simple([], 0).
 
-% If HEAD is a number
+% If HEAD is a number, compute sum.
 sum-up-numbers-simple([HEAD|TAIL], N):-
-   sum-up-numbers-simple(TAIL,  SubSum),
    number(HEAD),
+   sum-up-numbers-simple(TAIL, SubSum),
    N is HEAD + SubSum.
+
+% If HEAD is a non-number, skip element.
+sum-up-numbers-simple([HEAD|TAIL], N):-
