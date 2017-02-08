@@ -60,29 +60,61 @@ sum-up-numbers-general([HEAD|TAIL], N):-
 % If single numeric element in list, return element.
 find-list-min([HEAD], HEAD).
 
-%% If single non-numeric element in list, return false.
-find-list-min([HEAD], MIN_VAL):-
-	\+ number(HEAD).
 
 % If multiple elements, compare first two if both are number
-find-min([HEAD,NECK|TAIL], MIN_VAL):-
+find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
 	number(HEAD),
 	number(NECK),
 	HEAD > NECK,           
-	find-min([NECK|TAIL], MIN_VAL);
+	find-list-min([NECK|TAIL], MIN_VAL).
 
-find-min([HEAD,NECK|TAIL], MIN_VAL):-
+find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
 	number(HEAD),
 	number(NECK),
 	HEAD =< NECK,         
-	find-min([HEAD|TAIL], MIN_VAL).
+	find-list-min([HEAD|TAIL], MIN_VAL).
 
-find-min([HEAD,NECK|TAIL], MIN_VAL):-    % if second element is a number but not the first one
-	\+(number(HEAD)),
+%if HEAD is non-numeric
+find-list-min([HEAD,NECK|TAIL], MIN_VAL):-
+	\+ number(HEAD),
 	number(NECK),
-	find-min([NECK|TAIL], MIN_VAL).
+	find-list-min([NECK|TAIL], MIN_VAL).
 
-find-min([HEAD,NECK|TAIL], MIN_VAL):-   %  if first element is a number but not the second one
+% if NECK is non-numeric
+find-list-min([HEAD,NECK|TAIL], MIN_VAL):-  
 	number(HEAD),
 	\+(number(NECK)),
-	find-min([HEAD|TAIL], MIN_VAL).
+	find-list-min([HEAD|TAIL], MIN_VAL).
+
+% if both are non-numeric.
+find-min([HEAD, NECK|TAIL], MIN_VAL):-
+    \+ number(HEAD),
+	\+(number(NECK)),
+	find-min(TAIL, MIN_VAL).
+
+
+% append(L, X) returns a list with X appended to it.
+
+% if list is empty
+append([],X,X).
+
+% else
+append([X|Y],Z,[X|W])
+:- append(Y,Z,W). 
+
+
+% my-flatten(L1, L2) returns a list L2 by flattening L1
+
+%if list is empty
+my-flatten([], L2, L2).
+
+my-flatten([HEAD|TAIL], L2):-
+	number(HEAD),
+	L2 is append(L2, HEAD).
+
+my-flatten([HEAD|TAIL], L2):-
+	is_list(HEAD),
+
+
+
+
